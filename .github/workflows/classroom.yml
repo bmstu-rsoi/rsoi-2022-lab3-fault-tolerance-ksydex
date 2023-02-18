@@ -30,6 +30,10 @@ jobs:
           ./scripts/wait-script.sh
         env:
           WAIT_PORTS: 8080,8070,8060,8050
+          
+      - name: Rabbitmq logs
+        timeout-minutes: 10
+        run: docker-compose logs --tail=100 rabbitmq
 
       # TODO setup variant, service and port
 
