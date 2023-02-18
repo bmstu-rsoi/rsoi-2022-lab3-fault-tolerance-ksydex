@@ -24,7 +24,7 @@ public class RabbitMQConsumer : BackgroundService
 
         var factory = new ConnectionFactory
         {
-            HostName = "rabbitmq",
+            HostName = "rabbit",
             Port = 5672,
             UserName = "rabbitmq",
             Password = "rabbitmq",

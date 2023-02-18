@@ -15,9 +15,9 @@ services:
     ports:
       - "5432:5432"
   
-  rabbitmq:
+  rabbit:
     image: rabbitmq:3.9-management-alpine
-    container_name: 'rabbitmq'
+    container_name: rabbit
     healthcheck:
       test: ["CMD-SHELL", "rabbitmq-diagnostics check_local_alarms"]
       interval: 1s
@@ -69,7 +69,7 @@ services:
     depends_on:
       postgres:
         condition: service_started
-      rabbitmq:
+      rabbit:
         condition: service_healthy
     build:
       context: .
@@ -96,7 +96,7 @@ services:
   gateway:
     depends_on:
       - "reservation-service"
-      - "rabbitmq"
+      - "rabbit"
     build:
       context: .
       dockerfile: ./src/Gateway/Dockerfile

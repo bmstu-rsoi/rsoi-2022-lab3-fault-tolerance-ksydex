@@ -12,7 +12,7 @@ public class RabbitMQProducer
         //Here we specify the Rabbit MQ Server. we use rabbitmq docker image and use it
         var factory = new ConnectionFactory
         {
-            HostName = "rabbitmq",
+            HostName = "rabbit",
             Port = 5672,
             UserName = "rabbitmq",
             Password = "rabbitmq"
