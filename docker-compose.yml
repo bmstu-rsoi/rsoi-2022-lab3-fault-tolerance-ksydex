@@ -18,23 +18,14 @@ services:
   rabbit:
     image: rabbitmq:3.9.2-management-alpine
     container_name: rabbit
-    healthcheck:
-      test: ["CMD-SHELL", "rabbitmq-diagnostics check_local_alarms"]
-      interval: 1s
-      timeout: 3s
-      retries: 30
-    tty: true
     ports:
-      - "5672:5672"
       - "15672:15672"
+      - "5672:5672"
     volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-    #    networks:
-    #      - rabbitmq_go_net
-#    environment:
-#      RABBITMQ_DEFAULT_USER: rabbitmq
-#      RABBITMQ_DEFAULT_PASS: rabbitmq
+      - "./rabbitmq/data/:/var/lib/rabbitmq/"
+      - "./rabbitmq/log/:/var/log/rabbitmq/"
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics check_local_alarms" ]
 
   pgadmin:
     image: dpage/pgadmin4

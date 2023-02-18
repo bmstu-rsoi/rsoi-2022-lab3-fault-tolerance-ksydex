@@ -86,7 +86,7 @@ out
 .nuxt
 dist
 
-./rabbitmq
+/rabbitmq
 
 # Gatsby files
 .cache/
