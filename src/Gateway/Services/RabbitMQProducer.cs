@@ -14,8 +14,8 @@ public class RabbitMQProducer
         {
             HostName = "rabbit",
             Port = 5672,
-            UserName = "rabbitmq",
-            Password = "rabbitmq"
+            UserName = "guest",
+            Password = "guest"
         };
 
         //Create the RabbitMQ connection using connection factory details as i mentioned above

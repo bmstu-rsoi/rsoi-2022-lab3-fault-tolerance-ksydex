@@ -16,7 +16,7 @@ services:
       - "5432:5432"
   
   rabbit:
-    image: rabbitmq:3.9-management-alpine
+    image: rabbitmq:3.9.2-management-alpine
     container_name: rabbit
     healthcheck:
       test: ["CMD-SHELL", "rabbitmq-diagnostics check_local_alarms"]
@@ -32,9 +32,9 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     #    networks:
     #      - rabbitmq_go_net
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: rabbitmq
+#    environment:
+#      RABBITMQ_DEFAULT_USER: rabbitmq
+#      RABBITMQ_DEFAULT_PASS: rabbitmq
 
   pgadmin:
     image: dpage/pgadmin4
