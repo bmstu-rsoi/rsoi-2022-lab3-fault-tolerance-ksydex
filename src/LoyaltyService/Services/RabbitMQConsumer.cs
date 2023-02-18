@@ -27,7 +27,8 @@ public class RabbitMQConsumer : BackgroundService
             HostName = "rabbitmq",
             Port = 5672,
             UserName = "rabbitmq",
-            Password = "rabbitmq"
+            Password = "rabbitmq",
+            VirtualHost = "/"
         };
 
         _connection = factory.CreateConnection();
