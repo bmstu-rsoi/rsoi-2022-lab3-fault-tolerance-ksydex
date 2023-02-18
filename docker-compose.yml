@@ -20,7 +20,7 @@ services:
     container_name: 'rabbitmq'
     tty: true
     healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
+      test: ["CMD-SHELL", "rabbitmq-diagnostics check_local_alarms"]
       interval: 1s
       timeout: 3s
       retries: 30
