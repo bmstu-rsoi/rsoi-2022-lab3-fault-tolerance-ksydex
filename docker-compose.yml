@@ -18,6 +18,11 @@ services:
   rabbitmq:
     image: rabbitmq:3.9-management-alpine
     container_name: 'rabbitmq'
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 3s
+      retries: 30
     tty: true
     ports:
       - 5672:5672
@@ -62,8 +67,10 @@ services:
   loyalty-service:
     container_name: "loyalty_service"
     depends_on:
-      - postgres
-      - rabbitmq
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     build:
       context: .
       dockerfile: ./src/LoyaltyService/Dockerfile

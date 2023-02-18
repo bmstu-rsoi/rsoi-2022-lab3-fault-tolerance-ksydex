@@ -30,7 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     );
 });
 
-// builder.Services.AddHostedService<RabbitMQConsumer>();
+builder.Services.AddHostedService<RabbitMQConsumer>();
 
 var app = builder.Build();
 
