@@ -55,12 +55,12 @@ public class RabbitMQConsumer : BackgroundService
 
             var dto = JsonSerializer.Deserialize<LoyaltyDto>(message);
             if (dto == null) return;
-            
+
             var e = await _appDbContext.Set<Loyalty>()
                 .SingleOrDefaultAsync(x => x.Id == dto.Id);
-            
+
             if (e == null) return;
-            
+
             e.UserName = dto.UserName;
             e.ReservationCount = dto.ReservationCount;
 

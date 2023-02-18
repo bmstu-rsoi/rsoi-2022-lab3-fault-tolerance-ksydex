@@ -28,6 +28,5 @@ public class LoyaltyClientService : ClientServiceBase
 
     public void Update(int id, LoyaltyDto dto)
     {
-        
     }
 }
