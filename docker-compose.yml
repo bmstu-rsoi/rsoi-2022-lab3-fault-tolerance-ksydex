@@ -16,9 +16,14 @@ services:
       - "5432:5432"
         
   rabbitmq:
-    image: rabbitmq:3
+    image: rabbitmq:3-management
     container_name: 'rabbitmq'
     tty: true
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 3s
+      retries: 30
     ports:
       - 5672:5672
       - 15672:15672
@@ -62,12 +67,14 @@ services:
   loyalty-service:
     container_name: "loyalty_service"
     depends_on:
-      - "rabbitmq"
-      - "postgres"
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     build:
       context: .
       dockerfile: ./src/LoyaltyService/Dockerfile
-    restart: always
+    restart: on-failure
     ports:
       - ${LOYALTY_SERVICE_OUT_PORT}:80
     env_file:
