@@ -28,10 +28,12 @@ public class RabbitMQConsumer : BackgroundService
             Port = 5672,
             UserName = "rabbitmq",
             Password = "rabbitmq",
-            VirtualHost = "/"
         };
 
+        //Create the RabbitMQ connection using connection factory details as i mentioned above
         _connection = factory.CreateConnection();
+        //Here we create channel with session and model
+
         _channel = _connection.CreateModel();
 
         _channel.QueueDeclare(queue: "loyalty/update", exclusive: false, durable: true);
