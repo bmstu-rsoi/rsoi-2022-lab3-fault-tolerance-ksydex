@@ -20,7 +20,7 @@ services:
     container_name: 'rabbitmq'
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
-      interval: 3s
+      interval: 1s
       timeout: 3s
       retries: 30
     tty: true
@@ -67,10 +67,10 @@ services:
   loyalty-service:
     container_name: "loyalty_service"
     depends_on:
-      - postgres
-#        condition: service_started
-      - rabbitmq
-#        condition: service_healthy
+      postgres:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     build:
       context: .
       dockerfile: ./src/LoyaltyService/Dockerfile
