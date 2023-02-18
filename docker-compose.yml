@@ -68,6 +68,8 @@ services:
       - ${LOYALTY_SERVICE_OUT_PORT}:80
     env_file:
       - .env
+    healthcheck:
+      test: "wget -nv -t1 --spider localhost:8050/manage/health"
 
   payment-service:
     container_name: "payment_service"

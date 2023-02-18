@@ -1,8 +1,10 @@
 using LoyaltyService.Data;
 using LoyaltyService.Data.MappingProfiles;
 using LoyaltyService.Services;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +32,24 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     );
 });
 
-builder.Services.AddHostedService<RabbitMQConsumer>();
+// builder.Services.AddHostedService<RabbitMQConsumer>();
+
+builder.Services.AddOptions<RabbitMqTransportOptions>()
+    .BindConfiguration(nameof(RabbitMqTransportOptions));
+
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.ConfigureHealthCheckOptions(x =>
+    {
+        x.FailureStatus = HealthStatus.Degraded;
+    });
+    
+    cfg.UsingRabbitMq((context, config) =>
+    {
+        config.UseJsonSerializer();
+        config.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 
