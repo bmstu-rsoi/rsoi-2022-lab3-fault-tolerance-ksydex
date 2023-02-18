@@ -62,6 +62,7 @@ services:
   loyalty-service:
     container_name: "loyalty_service"
     depends_on:
+      - "rabbitmq"
       - "postgres"
     build:
       context: .
@@ -88,6 +89,7 @@ services:
   gateway:
     depends_on:
       - "reservation-service"
+      - "rabbitmq"
     build:
       context: .
       dockerfile: ./src/Gateway/Dockerfile
