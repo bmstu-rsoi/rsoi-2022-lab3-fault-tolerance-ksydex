@@ -1,5 +1,6 @@
 using LoyaltyService.Data;
 using LoyaltyService.Data.MappingProfiles;
+using LoyaltyService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +29,8 @@ builder.Services.AddDbContext<AppDbContext>(x =>
         // throw new NullReferenceException("Database URL is not set!")
     );
 });
+
+builder.Services.AddHostedService<RabbitMQConsumer>();
 
 var app = builder.Build();
 

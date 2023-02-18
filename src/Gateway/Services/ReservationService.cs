@@ -11,13 +11,16 @@ public class ReservationClientService : ClientServiceBase
     private readonly LoyaltyClientService _loyaltyClientService;
     private readonly PaymentClientService _paymentClientService;
 
+    private readonly RabbitMQProducer _rabbitMqProducer;
+
     protected override string BaseUri => "http://reservation_service:80";
 
     public ReservationClientService(LoyaltyClientService loyaltyClientService,
-        PaymentClientService paymentClientService)
+        PaymentClientService paymentClientService, RabbitMQProducer rabbitMqProducer)
     {
         _loyaltyClientService = loyaltyClientService;
         _paymentClientService = paymentClientService;
+        _rabbitMqProducer = rabbitMqProducer;
     }
 
     public async Task<PaginationModel<HotelDto>?> GetAllHotelsAsync(int page, int size)
@@ -50,8 +53,10 @@ public class ReservationClientService : ClientServiceBase
 
         loyalty.ReservationCount = loyalty.ReservationCount - 1;
 
-        loyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, loyalty) ??
-                  throw new Exception("Error while updating loyalty");
+        _rabbitMqProducer.Publish("loyalty/update", loyalty);
+        // non queue impl
+        // loyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, loyalty) ??
+        //           throw new Exception("Error while updating loyalty");
 
         reservation.Status = "CANCELED";
         return await UpdateReservationAsync(reservation.ReservationUid.ToString(), reservation);
@@ -79,11 +84,19 @@ public class ReservationClientService : ClientServiceBase
 
         if (payment == null) throw new Exception("Error while creating payment");
 
-        loyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, new LoyaltyDto
+        var updLoyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, new LoyaltyDto
         {
             UserName = loyalty.UserName,
             ReservationCount = loyalty.ReservationCount + 1
-        }) ?? throw new Exception("Error while updating loyalty");
+        });
+
+        if (updLoyalty == null)
+        {
+            // rollback payment
+            payment.Status = "CANCELED";
+            payment = await _paymentClientService.UpdateAsync(payment.Id, payment);
+            throw new Exception("Error while updating loyalty");
+        }
 
 
         var reservation = await CreateReservationAsync(new ReservationDto
@@ -155,7 +168,7 @@ public class ReservationClientService : ClientServiceBase
     public async Task<UserInfoDto> GetUserInfoAsync(string userName)
     {
         var loyalty = await _loyaltyClientService.GetAsync(userName);
-        if (loyalty == null) throw new NotFoundException();
+        if (loyalty == null) throw new Exception("Loyalty Service unavailable");
 
         return new UserInfoDto(loyalty,
             (await GetAllReservationsAsync(1, 100, userName))?.Items ?? new List<ReservationDto>());

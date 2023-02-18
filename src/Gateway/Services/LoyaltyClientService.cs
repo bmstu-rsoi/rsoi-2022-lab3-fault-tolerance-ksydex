@@ -25,4 +25,9 @@ public class LoyaltyClientService : ClientServiceBase
 
     public async Task<LoyaltyDto?> UpdateAsync(int id, LoyaltyDto dto)
         => await Client.PatchAsync<LoyaltyDto, LoyaltyDto>(BuildUri("api/v1/loyalty/" + id), dto);
+
+    public void Update(int id, LoyaltyDto dto)
+    {
+        
+    }
 }

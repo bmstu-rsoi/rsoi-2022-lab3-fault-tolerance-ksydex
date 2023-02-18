@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Gateway.Helpers;
 using Gateway.Middlewares;
+using Gateway.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<RabbitMQProducer>();
 // builder.Services.AddAutoMapper(x => { x.AddProfile<DefaultMappingProfile>(); });
 //
 // builder.Services.AddDbContext<AppDbContext>(x =>
