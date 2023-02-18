@@ -32,6 +32,8 @@ jobs:
           WAIT_PORTS: 8080,8070,8060,8050
           
       - name: Rabbitmq logs
+        if: always()
+        continue-on-error: true
         timeout-minutes: 10
         run: docker-compose logs --tail=100 rabbitmq
 
