@@ -37,6 +37,12 @@ jobs:
         timeout-minutes: 10
         run: docker-compose logs --tail=100 rabbitmq
 
+      - name: Rabbitmq logs from file
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 10
+        run: find /var/log/rabbitmq/ -type f -print0 | xargs -0 tail -n 100
+
       # TODO setup variant, service and port
 
       - name: Run API Tests
