@@ -37,7 +37,7 @@ public class ReservationsController : ControllerBase
 
 
     [HttpDelete("{uId}")]
-    public async Task<ActionResult<ReservationDto>> Book(string uId,
+    public async Task<ActionResult<ReservationDto>> CancelBook(string uId,
         [FromHeader(Name = HeaderConstants.UserName)]
         string userName)
     {

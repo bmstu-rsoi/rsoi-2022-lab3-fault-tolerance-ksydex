@@ -3,6 +3,7 @@ using Gateway.Constants;
 using Gateway.Data.Dtos;
 using Gateway.Services;
 using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Exceptions;
 
 namespace Gateway.Controllers;
 
@@ -19,5 +20,6 @@ public class LoyaltyController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<LoyaltyDto>> Get([FromHeader(Name = HeaderConstants.UserName)] string userName)
-        => Ok(await _loyaltyClientService.GetAsync(userName));
+        => Ok(await _loyaltyClientService.GetAsync(userName) ??
+              throw new ServiceUnavailableException("Loyalty Service unavailable"));
 }

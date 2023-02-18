@@ -71,7 +71,7 @@ public class ReservationClientService : ClientServiceBase
         var nightCount = (endDate - startDate).Days;
 
         var loyalty = await _loyaltyClientService.GetAsync(userName) ??
-                      throw new NotFoundException("Loyalty not found");
+                      throw new ServiceUnavailableException("Loyalty Service unavailable");
         var cost = (hotel.Price * nightCount);
         Console.WriteLine("Cost: {0}", cost);
         cost = (int)(cost * (1 - loyalty.Discount / 100.0));
@@ -168,7 +168,10 @@ public class ReservationClientService : ClientServiceBase
     public async Task<UserInfoDto> GetUserInfoAsync(string userName)
     {
         var loyalty = await _loyaltyClientService.GetAsync(userName);
-        if (loyalty == null) throw new Exception("Loyalty Service unavailable");
+        if (loyalty == null) return new UserInfoDto(new LoyaltyDto
+        {
+            UserName = userName
+        }, new List<ReservationDto>());
 
         return new UserInfoDto(loyalty,
             (await GetAllReservationsAsync(1, 100, userName))?.Items ?? new List<ReservationDto>());

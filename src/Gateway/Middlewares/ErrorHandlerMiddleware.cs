@@ -30,6 +30,7 @@ public class ErrorHandlerMiddleware
                 UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
                 ConflictException => (int)HttpStatusCode.Conflict,
                 NotFoundException => (int)HttpStatusCode.NotFound,
+                ServiceUnavailableException => (int)HttpStatusCode.ServiceUnavailable,
                 not null => (int)HttpStatusCode.BadRequest,
                 _ => (int)HttpStatusCode.InternalServerError
             };
