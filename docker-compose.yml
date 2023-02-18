@@ -58,10 +58,8 @@ services:
   loyalty-service:
     container_name: "loyalty_service"
     depends_on:
-      postgres:
-        condition: service_started
-      rabbit:
-        condition: service_healthy
+      - postgres
+      - rabbit
     build:
       context: .
       dockerfile: ./src/LoyaltyService/Dockerfile
@@ -86,8 +84,8 @@ services:
 
   gateway:
     depends_on:
-      - "reservation-service"
-      - "rabbit"
+      - reservation-service
+      - rabbit
     build:
       context: .
       dockerfile: ./src/Gateway/Dockerfile
