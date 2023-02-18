@@ -2,6 +2,8 @@ using System.ComponentModel;
 using Gateway.Helpers;
 using Gateway.Middlewares;
 using Gateway.Services;
+using MassTransit;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,23 @@ builder.Services.AddScoped<RabbitMQProducer>();
 //         // throw new NullReferenceException("Database URL is not set!")
 //     );
 // });
+
+builder.Services.AddOptions<RabbitMqTransportOptions>()
+    .BindConfiguration(nameof(RabbitMqTransportOptions));
+
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.ConfigureHealthCheckOptions(x =>
+    {
+        x.FailureStatus = HealthStatus.Degraded;
+    });
+    
+    cfg.UsingRabbitMq((context, config) =>
+    {
+        config.UseJsonSerializer();
+        config.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 
