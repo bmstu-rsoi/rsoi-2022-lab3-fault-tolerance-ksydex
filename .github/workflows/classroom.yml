@@ -19,6 +19,12 @@ jobs:
 
       # TODO build and run unit tests
 
+      - name: Allow logs write to rabbitmq folder
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 10
+        run: chmod a+w /var/log/rabbitmq
+
       - name: Build images
         timeout-minutes: 10
         run: docker compose build
