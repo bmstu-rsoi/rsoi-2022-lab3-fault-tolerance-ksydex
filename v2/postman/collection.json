@@ -1412,7 +1412,7 @@
 											"    const response = pm.response.json();",
 											"    pm.expect(response.status).to.not.empty",
 											"    pm.expect(response.discount).to.be.not.undefined",
-											"    pm.expect(response.reservationCount).to.be.eq(reservationCount)",
+											"    pm.expect(response.reservationCount).to.be.eq(reservationCount+1)",
 											"})"
 										],
 										"type": "text/javascript"

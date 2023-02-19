@@ -48,13 +48,13 @@ public class ReservationClientService : ClientServiceBase
         payment.Status = "CANCELED";
 
         await _paymentClientService.UpdateAsync(payment.Id, payment);
-        
+
         _messageManager.Publish(new LoyaltyUpdateMessage
         {
             UserName = userName,
             CountDelta = -1
         });
-        
+
         // non queue impl
         // loyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, loyalty) ??
         //           throw new Exception("Error while updating loyalty");
@@ -93,7 +93,7 @@ public class ReservationClientService : ClientServiceBase
             //     UserName = loyalty.UserName,
             //     CountDelta = 1
             // });
-            
+
             var updLoyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, new LoyaltyDto
             {
                 UserName = loyalty.UserName,
@@ -107,7 +107,6 @@ public class ReservationClientService : ClientServiceBase
                 payment = await _paymentClientService.UpdateAsync(payment.Id, payment);
                 throw new Exception("Error while updating loyalty");
             }
-
 
             var reservation = await CreateReservationAsync(new ReservationDto
             {

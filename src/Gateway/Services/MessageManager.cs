@@ -9,7 +9,7 @@ namespace Gateway.Services;
 public class MessageManager
 {
     private readonly IPublishEndpoint _publishEndpoint;
-    
+
     public MessageManager(IPublishEndpoint publishEndpoint)
     {
         _publishEndpoint = publishEndpoint;

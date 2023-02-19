@@ -32,6 +32,7 @@ public class LoyaltyUpdateMessageConsumer : IConsumer<LoyaltyUpdateMessage>
 
         e.ReservationCount += message.CountDelta;
 
+
         e.Status = LoyaltyHelpers.CalcStatus(e);
         e.Discount = LoyaltyHelpers.CalcDiscount(e);
 
