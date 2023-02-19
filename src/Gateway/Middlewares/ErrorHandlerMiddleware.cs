@@ -35,7 +35,7 @@ public class ErrorHandlerMiddleware
                 _ => (int)HttpStatusCode.InternalServerError
             };
 
-            var result = error?.InnerException?.Message ?? "Error";
+            var result = error?.Message ?? "Error";
             await response.WriteAsync(result);
         }
     }
