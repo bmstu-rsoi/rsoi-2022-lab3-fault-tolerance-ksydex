@@ -49,6 +49,7 @@ builder.Services.AddMassTransit(cfg =>
     {
         config.UseJsonSerializer();
         config.ConfigureEndpoints(context);
+        config.UseMessageRetry(r => r.Interval(20, TimeSpan.FromSeconds(10)));
     });
 });
 
