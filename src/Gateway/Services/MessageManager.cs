@@ -8,16 +8,16 @@ namespace Gateway.Services;
 
 public class MessageManager
 {
-    private readonly IBus _bus;
+    private readonly IPublishEndpoint _publishEndpoint;
     
-    public MessageManager(IBus bus)
+    public MessageManager(IPublishEndpoint publishEndpoint)
     {
-        _bus = bus;
+        _publishEndpoint = publishEndpoint;
     }
 
     public void Publish<T>(T data)
         where T : class
     {
-        _bus.Publish(data);
+        _publishEndpoint.Publish(data);
     }
 }

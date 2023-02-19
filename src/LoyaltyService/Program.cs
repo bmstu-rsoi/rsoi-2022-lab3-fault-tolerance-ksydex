@@ -43,7 +43,8 @@ builder.Services.AddOptions<RabbitMqTransportOptions>()
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.ConfigureHealthCheckOptions(x => { x.FailureStatus = HealthStatus.Degraded; });
-
+    cfg.AddConsumer<LoyaltyUpdateMessageConsumer>();
+    
     cfg.UsingRabbitMq((context, config) =>
     {
         config.UseJsonSerializer();
