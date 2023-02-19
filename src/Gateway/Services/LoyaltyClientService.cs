@@ -1,5 +1,6 @@
 using Gateway.Common;
 using Gateway.Data.Dtos;
+using SharedKernel.Exceptions;
 
 namespace Gateway.Services;
 
@@ -12,7 +13,16 @@ public class LoyaltyClientService : ClientServiceBase
     }
 
     public async Task<LoyaltyDto?> GetAsync(string userName)
-        => (await GetAllAsync(1, 1, userName))?.FirstOrDefault();
+    {
+        try
+        {
+            return (await GetAllAsync(1, 1, userName))?.FirstOrDefault();
+        }
+        catch (Exception)
+        {
+            throw new ServiceUnavailableException("Loyalty Service unavailable");
+        }
+    }
 
     public async Task<List<LoyaltyDto>?> GetAllAsync(int page, int size, string userName)
         => await Client.GetAsync<List<LoyaltyDto>>(BuildUri("api/v1/loyalty"), null, new Dictionary<string, string>
