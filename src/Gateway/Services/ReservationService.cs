@@ -3,6 +3,7 @@ using Gateway.Data.Dtos;
 using Gateway.Helpers;
 using SharedKernel.Common.AbstractClasses;
 using SharedKernel.Exceptions;
+using SharedKernel.MessageTypes;
 
 namespace Gateway.Services;
 
@@ -11,16 +12,16 @@ public class ReservationClientService : ClientServiceBase
     private readonly LoyaltyClientService _loyaltyClientService;
     private readonly PaymentClientService _paymentClientService;
 
-    private readonly RabbitMQProducer _rabbitMqProducer;
+    private readonly MessageManager _messageManager;
 
     protected override string BaseUri => "http://reservation_service:80";
 
     public ReservationClientService(LoyaltyClientService loyaltyClientService,
-        PaymentClientService paymentClientService, RabbitMQProducer rabbitMqProducer)
+        PaymentClientService paymentClientService, MessageManager messageManager)
     {
         _loyaltyClientService = loyaltyClientService;
         _paymentClientService = paymentClientService;
-        _rabbitMqProducer = rabbitMqProducer;
+        _messageManager = messageManager;
     }
 
     public async Task<PaginationModel<HotelDto>?> GetAllHotelsAsync(int page, int size)
@@ -46,15 +47,14 @@ public class ReservationClientService : ClientServiceBase
                       throw new Exception("Payment not found");
         payment.Status = "CANCELED";
 
-        payment = await _paymentClientService.UpdateAsync(payment.Id, payment);
-
-
-        var loyalty = await _loyaltyClientService.GetAsync(userName) ??
-                      throw new NotFoundException("Loyalty not found");
-
-        loyalty.ReservationCount = loyalty.ReservationCount - 1;
-
-        _rabbitMqProducer.Publish("loyalty/update", loyalty);
+        await _paymentClientService.UpdateAsync(payment.Id, payment);
+        
+        _messageManager.Publish(new LoyaltyUpdateMessage
+        {
+            UserName = userName,
+            CountDelta = -1
+        });
+        
         // non queue impl
         // loyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, loyalty) ??
         //           throw new Exception("Error while updating loyalty");
@@ -87,6 +87,13 @@ public class ReservationClientService : ClientServiceBase
 
             if (payment == null) throw new Exception("Error while creating payment");
 
+            // implementation with message broker
+            // _messageManager.Publish(new LoyaltyUpdateMessage
+            // {
+            //     UserName = loyalty.UserName,
+            //     CountDelta = 1
+            // });
+            
             var updLoyalty = await _loyaltyClientService.UpdateAsync(loyalty.Id, new LoyaltyDto
             {
                 UserName = loyalty.UserName,

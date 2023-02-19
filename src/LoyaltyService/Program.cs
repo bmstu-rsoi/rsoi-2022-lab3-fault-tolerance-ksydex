@@ -1,6 +1,7 @@
 using LoyaltyService.Data;
 using LoyaltyService.Data.MappingProfiles;
 using LoyaltyService.Services;
+using LoyaltyService.Services.MessageConsumers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,8 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     );
 });
 
+builder.Services.AddScoped<LoyaltyUpdateMessageConsumer>();
+
 // builder.Services.AddHostedService<RabbitMQConsumer>();
 
 builder.Services.AddOptions<RabbitMqTransportOptions>()
@@ -39,11 +42,8 @@ builder.Services.AddOptions<RabbitMqTransportOptions>()
 
 builder.Services.AddMassTransit(cfg =>
 {
-    cfg.ConfigureHealthCheckOptions(x =>
-    {
-        x.FailureStatus = HealthStatus.Degraded;
-    });
-    
+    cfg.ConfigureHealthCheckOptions(x => { x.FailureStatus = HealthStatus.Degraded; });
+
     cfg.UsingRabbitMq((context, config) =>
     {
         config.UseJsonSerializer();

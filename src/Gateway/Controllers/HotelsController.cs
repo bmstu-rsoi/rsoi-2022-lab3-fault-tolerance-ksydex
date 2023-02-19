@@ -13,10 +13,10 @@ public class HotelsController : ControllerBase
 {
     private readonly ReservationClientService _reservationClientService;
 
-    public HotelsController(RabbitMQProducer rabbitMqProducer)
+    public HotelsController(MessageManager messageManager)
     {
         _reservationClientService =
-            new ReservationClientService(new LoyaltyClientService(), new PaymentClientService(), rabbitMqProducer);
+            new ReservationClientService(new LoyaltyClientService(), new PaymentClientService(), messageManager);
     }
 
     [HttpGet]

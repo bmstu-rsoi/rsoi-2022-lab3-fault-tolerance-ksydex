@@ -20,7 +20,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<RabbitMQProducer>();
+builder.Services.AddScoped<MessageManager>();
 // builder.Services.AddAutoMapper(x => { x.AddProfile<DefaultMappingProfile>(); });
 //
 // builder.Services.AddDbContext<AppDbContext>(x =>
