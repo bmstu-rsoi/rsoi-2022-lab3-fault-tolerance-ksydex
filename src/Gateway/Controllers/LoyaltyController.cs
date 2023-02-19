@@ -20,6 +20,5 @@ public class LoyaltyController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<LoyaltyDto>> Get([FromHeader(Name = HeaderConstants.UserName)] string userName)
-        => Ok(await _loyaltyClientService.GetAsync(userName) ??
-              throw new ServiceUnavailableException("Loyalty Service unavailable"));
+        => Ok(await _loyaltyClientService.GetAsync(userName));
 }
